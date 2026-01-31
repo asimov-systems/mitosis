@@ -7,10 +7,6 @@ license = "MIT/Apache-2.0"
 repository = "https://github.com/Manishearth/mitosis"
 description = "Crate providing the ability to spawn processes with custom closures"
 
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-ipc-channel = "0.15.0"
+ipc-channel = "0.20.2"
 serde = { version = "1.0.130", features = ["derive"] }
-lazy_static = "1.4.0"
