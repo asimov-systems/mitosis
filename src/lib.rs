@@ -52,7 +52,7 @@ pub fn init() {
 static IN_TEST_ENV: AtomicBool = AtomicBool::new(false);
 
 /// Initialize `mitosis` within a `#[test]`. You need to also have
-/// ```rust
+/// ```rust,no_run
 /// #[test]
 /// fn mitosis() {
 ///     init_test()
@@ -175,7 +175,7 @@ impl Builder {
             "cannot spawn mitosis process with `{}` still set",
             ENV_NAME
         );
-        child.envs(self.envs.into_iter());
+        child.envs(self.envs);
         child.env(ENV_NAME, token);
         if IN_TEST_ENV.load(Ordering::Relaxed) {
             // we expect the user to have supplied a `#[test] fn mitosis() { mitosis::init_test() }

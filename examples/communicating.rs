@@ -1,5 +1,4 @@
 use ipc_channel::ipc;
-use mitosis;
 
 // This example dekonstrates sending IPC channels over to the other process
 //

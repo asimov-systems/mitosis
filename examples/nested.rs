@@ -1,5 +1,3 @@
-use mitosis;
-
 fn main() {
     mitosis::init();
     let five = mitosis::spawn(5, |x| {
