@@ -1,19 +1,49 @@
 name: Tests
 
-on: [push]
+on:
+  push:
+  schedule:
+    - cron: "0 0 1 */3 *" # every 3 months
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        name: [Windows, macOS, Linux]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    name: Test on ${{ matrix.name }}
     steps:
-    - uses: actions/checkout@v1
-    - name: Build
-      run: cargo build --verbose
-    - name: Run simple example
-      run: cargo run --example simple
-    - name: Run communicating example
-      run: cargo run --example communicating
-    - name: Run join example
-      run: cargo run --example join
+      - uses: actions/checkout@v1
+      - id: check-library
+        name: Build library
+        run: cargo check
+      - id: check-tests
+        name: Build tests
+        if: steps.check-library.outcome == 'success'
+        run: cargo check --tests
+      - id: check-examples
+        name: Build examples
+        if: steps.check-library.outcome == 'success'
+        run: cargo check --examples
+      - name: Run tests
+        if: steps.check-tests.outcome == 'success'
+        run: cargo test
+      - name: Run simple example
+        if: steps.check-examples.outcome == 'success'
+        run: cargo run --example simple
+      - name: Run communicating example
+        if: steps.check-examples.outcome == 'success'
+        run: cargo run --example communicating
+      - name: Run join example
+        if: steps.check-examples.outcome == 'success'
+        run: cargo run --example join
+      - name: Run stdout example
+        if: steps.check-examples.outcome == 'success'
+        run: cargo run --example stdout
+      - name: Run kill example
+        if: steps.check-examples.outcome == 'success'
+        run: cargo run --example kill
+      - name: Run nested example
+        if: steps.check-examples.outcome == 'success'
+        run: cargo run --example nested
