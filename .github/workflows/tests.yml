@@ -6,15 +6,22 @@ on:
     - cron: "0 0 1 */3 *" # every 3 months
 
 jobs:
-  build:
+  check:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        name: [Windows, macOS, Linux]
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - name: Windows
+            os: windows-latest
+          - name: macOS
+            os: macos-latest
+          - name: Linux
+            os: ubuntu-latest
     name: Test on ${{ matrix.name }}
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v6
+
       - id: check-library
         name: Build library
         run: cargo check
@@ -26,9 +33,11 @@ jobs:
         name: Build examples
         if: steps.check-library.outcome == 'success'
         run: cargo check --examples
+
       - name: Run tests
         if: steps.check-tests.outcome == 'success'
         run: cargo test
+
       - name: Run simple example
         if: steps.check-examples.outcome == 'success'
         run: cargo run --example simple
